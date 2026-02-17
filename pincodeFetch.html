@@ -1,0 +1,142 @@
+<template>
+    <lightning-card title="Pincode Address Finder" icon-name="standard:address">
+
+        <div class="slds-p-around_medium">
+
+            <!-- Input + Buttons -->
+            <div class="slds-grid slds-gutters">
+
+                <div class="slds-col">
+                    <lightning-input 
+                        label="Enter Pincode"
+                        maxlength="6"
+                        value={pincode}
+                        onchange={handlePincodeChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-col slds-align-bottom slds-grid slds-gutters_x-small">
+
+                    <lightning-button 
+                        label="Search"
+                        variant="brand"
+                        onclick={handleSearch}>
+                    </lightning-button>
+                    <span class="slds-m-left_x-small"></span>
+                    <lightning-button 
+                        label="Reset"
+                        variant="neutral"
+                        onclick={handleReset}>
+                    </lightning-button>
+
+                </div>
+            </div>
+
+            <!-- Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-m-top_medium">
+                    <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Results -->
+            <template if:true={postOffices}>
+                <div class="slds-m-top_large">
+                    <div class="slds-grid slds-wrap slds-gutters_large">
+
+                        <template for:each={postOffices} for:item="po" for:index="index">
+                            <div key={po.Name}
+                                 data-index={index}
+                                 onclick={handleSelect}
+                                 class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2"
+                                 style="cursor:pointer;">
+
+                                <article class="slds-card slds-card_boundary slds-m-bottom_medium">
+
+                                    <div class="slds-card__header slds-grid">
+                                        <header class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="standard:location" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    {po.Name}
+                                                </h2>
+                                            </div>
+                                        </header>
+                                    </div>
+
+                                    <div class="slds-card__body slds-card__body_inner">
+                                        <p><b>District:</b> {po.District}</p>
+                                        <p><b>Block:</b> {po.Block}</p>
+                                        <p><b>State:</b> {po.State}</p>
+                                        <p><b>Country:</b> {po.Country}</p>
+                                        <p><b>Pincode:</b> {po.Pincode}</p>
+                                    </div>
+
+                                </article>
+
+                            </div>
+                        </template>
+
+                    </div>
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+
+    <!-- 🔥 ENTERPRISE MODAL -->
+    <template if:true={showModal}>
+        <section role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+
+                <!-- header -->
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">
+                        Confirm Address Update
+                    </h2>
+                </header>
+
+                <!-- body -->
+                <div class="slds-modal__content slds-p-around_medium">
+
+                    <p class="slds-m-bottom_small">
+                        Update Account Billing Address to:
+                    </p>
+
+                    <div class="slds-box slds-theme_default">
+                        <p><b>{selectedAddress.Name}</b></p>
+                        <p>District: {selectedAddress.District}</p>
+                        <p>Block: {selectedAddress.Block}</p>
+                        <p>State: {selectedAddress.State}</p>
+                        <p>Country: {selectedAddress.Country}</p>
+                        <p>Pincode: {selectedAddress.Pincode}</p>
+                    </div>
+
+                </div>
+
+                <!-- footer -->
+                <footer class="slds-modal__footer">
+
+                    <lightning-button 
+                        label="Cancel"
+                        onclick={closeModal}>
+                    </lightning-button>
+
+                    <lightning-button 
+                        label="Update Address"
+                        variant="brand"
+                        class="slds-m-left_small"
+                        onclick={confirmUpdate}>
+                    </lightning-button>
+
+                </footer>
+
+            </div>
+        </section>
+
+        <!-- backdrop -->
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
